@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Untuk Dya 🌸</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ======================== COUNTDOWN ======================== */
+    #cd-screen {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden; background: #0e0820;
+    }
+    #cd-screen::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(100,50,180,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 70%, rgba(40,80,180,0.3) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 60% 20%, rgba(200,80,150,0.2) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .star {
+      position: absolute; border-radius: 50%; background: white;
+      animation: twinkle var(--td,3s) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.1; transform: scale(0.7); }
+      to   { opacity: var(--to,0.9); transform: scale(1.3); }
+    }
+    .cd-petal {
+      position: absolute; font-size: var(--ps,1rem); opacity: 0.12;
+      animation: cdFloat var(--pd,8s) linear infinite;
+      top: var(--pt,0); left: var(--pl,0);
+    }
+    @keyframes cdFloat {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+      50%  { opacity: 0.18; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+    .cd-inner {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; padding: 0 2rem;
+      width: 100%; max-width: 380px;
+    }
+    .cd-eyebrow {
+      font-family: 'DM Sans', sans-serif; font-size: 0.65rem;
+      font-weight: 400; letter-spacing: 0.25em;
+      text-transform: uppercase; color: #a88fd4; margin-bottom: 1.2rem;
+    }
+    .cd-headline {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.55rem; font-weight: 300; color: #eedeff;
+      text-align: center; line-height: 1.5; margin-bottom: 2.5rem;
+    }
+    .cd-headline span { color: #f5a8d4; }
+    .cd-timer {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem; width: 100%; margin-bottom: 2.5rem;
+    }
+    .cd-unit-block {
+      display: flex; flex-direction: column; align-items: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(200,160,255,0.15);
+      border-radius: 14px; padding: 1rem 0.5rem 0.8rem;
+    }
+    .cd-num {
+      font-family: 'Cormorant Garamond', serif; font-size: 2.8rem;
+      font-weight: 600; color: #f0e6ff; line-height: 1;
+      text-shadow: 0 0 40px rgba(200,130,255,0.4); letter-spacing: -0.02em;
+    }
+    .cd-lbl {
+      font-family: 'DM Sans', sans-serif; font-size: 0.55rem;
+      font-weight: 400; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #8a73b5; margin-top: 0.4rem;
+    }
+    .cd-hint {
+      font-family: 'Dancing Script', cursive; font-size: 1.1rem;
+      color: #c9a8e8; text-align: center;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+    #cd-screen.fade-out { animation: cdFadeOut 1.2s ease forwards; }
+    @keyframes cdFadeOut {
+      0%   { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.05); pointer-events: none; }
+    }
+
+    /* ======================== BIRTHDAY ======================== */
+    #bday-screen { display: none; min-height: 100dvh; position: relative; overflow: hidden; }
+    #bday-screen::before {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 15% 10%, #ffe4f2 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 90% 5%, #f0e8ff 0%, transparent 55%),
+        radial-gradient(ellipse 50% 50% at 80% 90%, #e8f3ff 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 10% 90%, #fdf0e8 0%, transparent 55%),
+        #fff8fb;
+    }
+    #flower-rain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden;
+    }
+    .petal {
+      position: absolute; top: -60px;
+      animation: petalFall linear forwards; will-change: transform;
+    }
+    @keyframes petalFall {
+      0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      85%  { opacity: 1; }
+      100% { transform: translateY(115dvh) rotate(var(--pr,360deg)) scale(0.7); opacity: 0; }
+    }
+
+    /* Content wrapper */
+    .bday-wrap {
+      position: relative; z-index: 2;
+      padding: 3.5rem 1.25rem 4rem;
+      max-width: 420px; margin: 0 auto;
+    }
+
+    @keyframes riseUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    .bday-eyebrow {
+      font-family: 'DM Sans', sans-serif; font-size: 0.65rem;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: #c07090; text-align: center; margin-bottom: 0.5rem;
+      animation: riseUp 0.8s ease forwards;
+    }
+    .bday-title {
+      font-family: 'Dancing Script', cursive; font-size: 3.2rem;
+      font-weight: 700; color: #cc3d80; text-align: center;
+      line-height: 1.1; margin-bottom: 0.4rem;
+      animation: riseUp 0.9s ease forwards;
+    }
+    .bday-tagline {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.15rem; color: #9268b0; text-align: center;
+      margin-bottom: 2.5rem; animation: riseUp 1s ease forwards;
+    }
+    .flower-row {
+      text-align: center; font-size: 1.7rem; letter-spacing: 0.4rem;
+      margin-bottom: 2rem; animation: riseUp 1.1s ease forwards;
+      filter: drop-shadow(0 2px 8px rgba(200,100,150,0.2));
+    }
+
+    /* === SHARED CARD === */
+    .card {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(220,150,190,0.25);
+      border-radius: 22px; padding: 1.8rem 1.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 24px rgba(200,100,170,0.08), 0 1px 3px rgba(200,100,170,0.1);
+      animation: riseUp 1.2s ease forwards; position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: '🌸'; position: absolute; top: -6px; right: -6px;
+      font-size: 2.5rem; opacity: 0.12; transform: rotate(25deg);
+    }
+    .card-icon { text-align: center; font-size: 2rem; margin-bottom: 0.8rem; }
+    .card-title {
+      font-family: 'Dancing Script', cursive; font-size: 1.55rem;
+      font-weight: 700; color: #cc3d80; text-align: center;
+      margin-bottom: 1.2rem; line-height: 1.3;
+    }
+    .card-body {
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      font-weight: 300; line-height: 1.95; color: #4a3358;
+    }
+    .card-body p { margin-bottom: 1rem; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .accent  { color: #cc3d80; font-weight: 500; }
+    .accent2 { color: #7c4fa0; font-weight: 500; }
+
+    /* Quote box */
+    .quote-box {
+      border-left: 3px solid #e8a0c8; padding: 0.7rem 1rem;
+      margin: 1rem 0; background: rgba(240,210,230,0.3);
+      border-radius: 0 10px 10px 0;
+    }
+    .quote-box p {
+      margin: 0 !important;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 0.95rem; color: #7c4fa0;
+    }
+
+    /* === CHAT BUBBLES === */
+    .chat-section { margin-bottom: 2rem; animation: riseUp 1.25s ease forwards; }
+    .chat-label {
+      font-family: 'DM Sans', sans-serif; font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: #c07090; text-align: center; margin-bottom: 1rem;
+    }
+    .bubble-wrap { display: flex; flex-direction: column; gap: 0.65rem; }
+    .bubble {
+      max-width: 82%; padding: 0.75rem 1.1rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.87rem;
+      font-weight: 300; line-height: 1.7; color: #3a2848;
+      border-radius: 18px; position: relative; word-break: break-word;
+    }
+    .bubble-me {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #f4b8d8, #e8a0f0);
+      border-bottom-right-radius: 4px; color: #3a1040;
+    }
+    .bubble-time {
+      font-size: 0.65rem; color: rgba(60,20,70,0.5);
+      text-align: right; margin-top: 3px;
+    }
+
+    /* === LOVE LIST === */
+    .love-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .love-item {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      font-weight: 300; line-height: 1.7; color: #4a3358;
+    }
+    .love-item .love-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* === WISHLIST === */
+    .wish-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .wish-item {
+      display: flex; align-items: center; gap: 0.7rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      font-weight: 300; color: #4a3358; line-height: 1.6;
+    }
+    .wish-icon { font-size: 1rem; flex-shrink: 0; }
+    .wish-text { flex: 1; }
+    .wish-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 1.5px solid rgba(200,100,180,0.4);
+      flex-shrink: 0; display: flex; align-items: center;
+      justify-content: center; font-size: 0.7rem; color: #cc3d80;
+    }
+    .wish-done { border-color: #cc3d80; background: rgba(200,80,150,0.08); }
+
+    /* === SECTION HEADER === */
+    .section-header {
+      display: flex; align-items: center; gap: 0.7rem;
+      margin-bottom: 1.2rem; animation: riseUp 1.3s ease forwards;
+    }
+    .section-header-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, #e0a8c8, transparent);
+    }
+    .section-title {
+      font-family: 'Dancing Script', cursive; font-size: 1.5rem;
+      color: #9268b0; white-space: nowrap;
+    }
+
+    /* === PHOTO GRID === */
+    .photos-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.85rem; margin-bottom: 2rem;
+      animation: riseUp 1.4s ease forwards;
+    }
+    .photo-frame {
+      border-radius: 16px; overflow: hidden; aspect-ratio: 1/1;
+      position: relative; background: linear-gradient(140deg, #fde4f2, #f0e0ff);
+      box-shadow: 0 0 0 3px white, 0 4px 18px rgba(180,100,160,0.12);
+    }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .frame-placeholder {
+      width: 100%; height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.4rem; padding: 0.8rem;
+    }
+    .frame-placeholder .p-icon { font-size: 1.6rem; }
+    .frame-placeholder .p-label {
+      font-family: 'Dancing Script', cursive; font-size: 0.75rem;
+      color: #c090c0; text-align: center;
+    }
+    .photo-frame-wide { grid-column: span 2; aspect-ratio: 16/9; }
+
+    /* Ribbon */
+    .ribbon {
+      text-align: center; font-size: 1.2rem; letter-spacing: 0.5rem;
+      margin: 0.5rem 0 1.5rem; opacity: 0.5;
+    }
+
+    /* === FOOTER === */
+    .bday-footer {
+      text-align: center; padding-top: 0.5rem;
+      animation: riseUp 1.5s ease forwards;
+    }
+    .bday-footer-flowers { font-size: 1.5rem; letter-spacing: 0.3rem; margin-bottom: 1rem; }
+    .bday-footer-text {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.05rem; color: #a07ab8; line-height: 1.7;
+    }
+
+    /* Music button */
+    #music-btn {
+      position: fixed; bottom: 1.5rem; right: 1.25rem; z-index: 100;
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1.5px solid rgba(200,120,180,0.35);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      align-items: center; justify-content: center;
+      font-size: 1.3rem; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(180,100,160,0.15);
+      transition: transform 0.2s ease; display: none;
+    }
+    #music-btn:active { transform: scale(0.92); }
+    #music-btn.playing { animation: spin 3s linear infinite; }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Closing love note */
+    .love-note {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.1rem; color: #cc3d80;
+      text-align: center; line-height: 1.7; margin-top: 0.5rem;
+    }
+
+    /* Big emoji deco */
+    .big-deco { font-size: 2.5rem; text-align: center; margin-bottom: 0.8rem; }
+  </style>
+</head>
+<body>
+
+<!-- 🎵 BACKSOUND — ganti "YOUR_SONG.mp3" dengan nama file lagumu -->
+<audio id="bday-music" loop preload="auto">
+  <source src="C:\Users\andi\Documents\html\happybirthday\song.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ================== COUNTDOWN SCREEN ================== -->
+<div id="cd-screen">
+  <div class="cd-inner">
+    <p class="cd-eyebrow">A little surprise for you</p>
+    <p class="cd-headline">
+      Aku lagi nyiapin sesuatu<br>
+      yang spesial banget buat kamu, <span>Dya</span> —<br>
+      <span>tunggu bentar ya sayang... ✨</span>
+    </p>
+    <div class="cd-timer">
+      <div class="cd-unit-block">
+        <span class="cd-num" id="cd-d">00</span>
+        <span class="cd-lbl">Hari</span>
+      </div>
+      <div class="cd-unit-block">
+        <span class="cd-num" id="cd-h">00</span>
+        <span class="cd-lbl">Jam</span>
+      </div>
+      <div class="cd-unit-block">
+        <span class="cd-num" id="cd-m">00</span>
+        <span class="cd-lbl">Menit</span>
+      </div>
+      <div class="cd-unit-block">
+        <span class="cd-num" id="cd-s">00</span>
+        <span class="cd-lbl">Detik</span>
+      </div>
+    </div>
+    <p class="cd-hint">Sabar ya sayang, sebentar lagi 🌸</p>
+  </div>
+</div>
+
+<!-- ================== BIRTHDAY SCREEN ================== -->
+<div id="bday-screen">
+  <div id="flower-rain"></div>
+
+  <div class="bday-wrap">
+
+    <!-- Header -->
+    <p class="bday-eyebrow">3 Juni 2026 · Khusus untuk Dya</p>
+    <h1 class="bday-title">Happy Birthday, Dya!</h1>
+    <p class="bday-tagline">dari aku, buat Dya yang paling kamu 🌸</p>
+    <div class="flower-row">🌸 🌺 🌼 🌷 💐</div>
+
+    <!-- ===== CHAT BUBBLES ===== -->
+    <div class="chat-section">
+      <p class="chat-label">kalau bisa aku bilang langsung 💬</p>
+      <div class="bubble-wrap">
+
+        <div class="bubble bubble-me">
+          Hei <strong>Dya</strong>, selamat ulang tahun ya sayang 🎂
+          <div class="bubble-time">00:00 · 3 Juni 2026</div>
+        </div>
+
+        <div class="bubble bubble-me">
+          Aku tau kamu lagi cape banget. Kuliah, kerja, mikirin banyak hal —
+          tapi kamu tetep jalan. Dan aku bangga banget sama kamu 🥹
+          <div class="bubble-time">00:01</div>
+        </div>
+
+        <div class="bubble bubble-me">
+          Kamu itu bukan cuma kuat di luar,
+          tapi kamu juga manusiawi banget. Kamu boleh nangis,
+          kamu boleh lelah. Yang penting jangan sendirian. Ada aku di sini 💙
+          <div class="bubble-time">00:02</div>
+        </div>
+
+        <div class="bubble bubble-me">
+          Di hari ulang tahun kamu ini, aku cuma mau bilang satu hal:
+          <strong>kamu udah cukup, kamu udah hebat, dan kamu layak dapet yang terbaik.</strong>
+          <div class="bubble-time">00:03</div>
+        </div>
+
+        <div class="bubble bubble-me">
+          Love you banyak 🌸✨
+          <div class="bubble-time">00:03</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== SURAT CINTA ===== -->
+    <div class="card">
+      <div class="card-icon">💌</div>
+      <div class="card-title">Surat Kecil Buat Dya 💌</div>
+      <div class="card-body">
+        <p>
+          <strong>Dya</strong>, di saat temen-temen kamu bisa santai menikmati masa kuliah
+          tanpa mikirin uang — kamu udah belajar hal yang jauh lebih susah:
+          <span class="accent">bertanggung jawab sama hidup kamu sendiri.</span>
+          Dan itu bukan hal kecil.
+        </p>
+        <div class="quote-box">
+          <p>"Kamu nggak hanya belajar di kelas. Kamu belajar di kehidupan nyata, setiap hari."</p>
+        </div>
+        <p>
+          Kamu itu <span class="accent2">Gemini</span> — penuh energi, nggak bisa diam,
+          selalu ada ide baru. Dan aku suka itu. Meski kadang kamu juga
+          nangis karena hal-hal kecil, <span class="accent">itu justru yang bikin kamu.</span>
+          Karena kamu ngerasain segalanya dengan tulus.
+        </p>
+        <p>
+          Setiap malam yang panjang, setiap lelah yang kamu sembunyikan
+          biar orang lain nggak khawatir — aku lihat itu semua.
+          Dan aku mau kamu tau: <span class="accent">kerja keras kamu nggak sia-sia.</span>
+          Itu semua akan berbuah, dan panennya akan indah banget.
+        </p>
+        <p class="love-note">
+          Selamat ulang tahun, <strong>Dya</strong> — perempuan yang paling aku sayangi.<br>
+          Aku bangga bisa ada di sisi kamu. 🌷
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== HAL YANG AKU SUKA ===== -->
+    <div class="section-header">
+      <div class="section-header-line"></div>
+      <div class="section-title">Yang Aku Suka dari Kamu 💕</div>
+      <div class="section-header-line"></div>
+    </div>
+
+    <div class="card" style="animation-delay: 0.1s;">
+      <ul class="love-list">
+        <li class="love-item">
+          <span class="love-icon">🌸</span>
+          <span>Cara kamu tetap <strong>semangat</strong> meskipun udah capek banget. Kamu nggak pernah bener-bener nyerah.</span>
+        </li>
+        <li class="love-item">
+          <span class="love-icon">💫</span>
+          <span>Energi kamu yang nggak ada habisnya — kamu itu kayak matahari yang nggak tau kapan harus redup.</span>
+        </li>
+        <li class="love-item">
+          <span class="love-icon">🥹</span>
+          <span>Sisi sensitif kamu. Kamu nangis buat hal kecil karena kamu <strong>peduli</strong>, dan itu hal yang langka.</span>
+        </li>
+        <li class="love-item">
+          <span class="love-icon">💪</span>
+          <span>Cara kamu <strong>tanggung jawab</strong> sama diri sendiri di umur yang masih muda. Itu bukan hal mudah.</span>
+        </li>
+        <li class="love-item">
+          <span class="love-icon">😄</span>
+          <span>Tawa kamu yang menular — meskipun kamu lagi banyak pikiran, senyum kamu tetap bisa bikin orang di sekitar ikut bahagia.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ===== WISHLIST / DOA ===== -->
+    <div class="section-header" style="animation-delay: 0.2s;">
+      <div class="section-header-line"></div>
+      <div class="section-title">Doa & Harapan 🌟</div>
+      <div class="section-header-line"></div>
+    </div>
+
+    <div class="card" style="animation-delay: 0.2s;">
+      <div class="card-icon">🌠</div>
+      <div class="card-title">Semoga Semua<br>Wishlist Dya Tercapai 🌠</div>
+      <div class="card-body">
+        <p>Di tahun baru umurmu ini, <strong>Dya</strong>, aku mendoakan yang terbaik buat kamu:</p>
+        <ul class="wish-list">
+          <li class="wish-item">
+            <span class="wish-icon">✨</span>
+            <span class="wish-text">Semua kerja keras kamu terbayar lunas — bisa membanggakan orang tua kamu, dan juga adik-adik kamu</span>
+            <span class="wish-check wish-done">♡</span>
+          </li>
+          <li class="wish-item">
+            <span class="wish-icon">🎓</span>
+            <span class="wish-text">Kuliahmu lancar, nilai-nilaimu memuaskan, dan wisudamu nggak kelamaan lagi</span>
+            <span class="wish-check wish-done">♡</span>
+          </li>
+          <li class="wish-item">
+            <span class="wish-icon">💆</span>
+            <span class="wish-text">Kamu bisa istirahat cukup, tubuhmu sehat, dan pikiranmu lebih tenang dari tahun lalu</span>
+            <span class="wish-check wish-done">♡</span>
+          </li>
+          <li class="wish-item">
+            <span class="wish-icon">🌸</span>
+            <span class="wish-text">Kamu dikelilingi orang-orang yang beneran sayang dan support kamu tanpa syarat</span>
+            <span class="wish-check wish-done">♡</span>
+          </li>
+          <li class="wish-item">
+            <span class="wish-icon">🌈</span>
+            <span class="wish-text">Impian-impian kamu yang paling besar — satu per satu — mulai jadi kenyataan</span>
+            <span class="wish-check wish-done">♡</span>
+          </li>
+          <li class="wish-item">
+            <span class="wish-icon">💑</span>
+            <span class="wish-text">Kita bisa terus ada buat satu sama lain, dan tiap hari lebih indah dari sebelumnya</span>
+            <span class="wish-check wish-done">♡</span>
+          </li>
+        </ul>
+        <p style="margin-top: 1.2rem;">
+          <span class="accent">Semoga semua wishlist kamu tercapai</span>, satu demi satu,
+          di umur yang baru ini. Kamu udah kerja keras banget — sekarang saatnya
+          <span class="accent2">semesta ikut kerja keras buat kamu.</span> 🌙
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== FOTO ===== -->
+    <div class="section-header" style="animation-delay: 0.3s;">
+      <div class="section-header-line"></div>
+      <div class="section-title">Momen Kita 📸</div>
+      <div class="section-header-line"></div>
+    </div>
+
+    <div class="photos-grid">
+      <!--
+        CARA ISI FOTO:
+        Hapus <div class="frame-placeholder">...</div>
+        Lalu tambahkan: <img src="foto1.jpg" alt="Foto 1">
+      -->
+      <div class="photo-frame">
+        <img src="1.jpeg" alt="Foto 1">
+      </div>
+      <div class="photo-frame">
+        <img src="8.jpeg" alt="Foto 2">
+      </div>
+      <div class="photo-frame">
+        <img src="9.jpeg" alt="Foto 3">
+      </div>
+      <div class="photo-frame">
+        <img src="10.jpeg" alt="Foto 4">
+      </div>
+      <div class="photo-frame photo-frame-wide">
+        <img src="6.jpeg" alt="Foto Favorit Kita">
+      </div>
+    </div>
+
+    <div class="ribbon">· · · 🌸 · · ·</div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="bday-footer">
+      <div class="big-deco">💌</div>
+      <div class="bday-footer-flowers">🌸 🌺 🌼 🌷 ✨</div>
+      <p class="bday-footer-text">
+        Makasih ya <strong>Dya</strong>, udah mau jadi kamu.<br>
+        Makasih udah ada, udah kuat, udah berjuang.<br>
+        Dan makasih udah kasih aku kesempatan<br>
+        buat ada di sisi kamu. 🥹<br><br>
+        <em>Happy birthday, Dya — my favorite person. 💙</em>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Music toggle -->
+<button id="music-btn" title="Toggle musik" aria-label="Toggle musik">🎵</button>
+
+<script>
+  // ============================================================
+  //  TARGET: 3 Juni 2026 pukul 00:00 WIB (UTC+7)
+  //  → Preview mode: ganti dengan tanggal lampau, misal:
+  //    const TARGET = new Date('2025-01-01T00:00:00+07:00');
+  // ============================================================
+  const TARGET = new Date('2026-05-03T00:00:00+08:00');
+
+  const elD = document.getElementById('cd-d');
+  const elH = document.getElementById('cd-h');
+  const elM = document.getElementById('cd-m');
+  const elS = document.getElementById('cd-s');
+  const cdScreen   = document.getElementById('cd-screen');
+  const bdayScreen = document.getElementById('bday-screen');
+  const musicBtn   = document.getElementById('music-btn');
+  const audio      = document.getElementById('bday-music');
+
+  // Stars
+  for (let i = 0; i < 100; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText =
+      'width:'+sz+'px;height:'+sz+'px;'+
+      'left:'+(Math.random()*100).toFixed(1)+'%;'+
+      'top:'+(Math.random()*100).toFixed(1)+'%;'+
+      '--td:'+(Math.random()*3+1).toFixed(1)+'s;'+
+      '--to:'+(Math.random()*0.6+0.3).toFixed(2)+';'+
+      'animation-delay:'+(Math.random()*4).toFixed(1)+'s;';
+    cdScreen.appendChild(s);
+  }
+
+  // BG petals on countdown
+  var bgP = ['🌸','🌺','🌷','🌼','✨'];
+  for (var i = 0; i < 10; i++) {
+    var p = document.createElement('div');
+    p.className = 'cd-petal';
+    p.textContent = bgP[Math.floor(Math.random() * bgP.length)];
+    p.style.cssText =
+      '--ps:'+(Math.random()*1.5+0.8).toFixed(1)+'rem;'+
+      '--pd:'+(Math.random()*8+6).toFixed(1)+'s;'+
+      '--pt:'+(Math.random()*100).toFixed(0)+'%;'+
+      '--pl:'+(Math.random()*100).toFixed(0)+'%;'+
+      'animation-delay:'+(Math.random()*6).toFixed(1)+'s;';
+    cdScreen.appendChild(p);
+  }
+
+  function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
+
+  function tick() {
+    var now  = new Date();
+    var diff = TARGET - now;
+    if (diff <= 0) { clearInterval(timer); unlockBirthday(); return; }
+    elD.textContent = pad(diff / 86400000);
+    elH.textContent = pad((diff % 86400000) / 3600000);
+    elM.textContent = pad((diff % 3600000) / 60000);
+    elS.textContent = pad((diff % 60000) / 1000);
+  }
+
+  function unlockBirthday() {
+    cdScreen.classList.add('fade-out');
+    setTimeout(function() {
+      cdScreen.style.display = 'none';
+      bdayScreen.style.display = 'block';
+      startFlowers();
+      musicBtn.style.display = 'flex';
+      audio.play()
+        .then(function() { musicBtn.classList.add('playing'); })
+        .catch(function() {
+          document.addEventListener('touchstart', function h() {
+            audio.play().then(function() { musicBtn.classList.add('playing'); });
+            document.removeEventListener('touchstart', h);
+          }, { once: true });
+          document.addEventListener('click', function h2() {
+            audio.play().then(function() { musicBtn.classList.add('playing'); });
+            document.removeEventListener('click', h2);
+          }, { once: true });
+        });
+    }, 1200);
+  }
+
+  // Flower rain
+  var PETALS = ['🌸','🌺','🌼','🌷','💐','🌻','🌹','🪷','✨','💫','⭐','🎀'];
+  var rain = document.getElementById('flower-rain');
+
+  function spawnPetal() {
+    var el = document.createElement('span');
+    el.className = 'petal';
+    el.textContent = PETALS[Math.floor(Math.random() * PETALS.length)];
+    var size = (Math.random() * 1.2 + 0.9).toFixed(2);
+    var dur  = (Math.random() * 5 + 5).toFixed(1);
+    var rot  = Math.random() > 0.5 ? '360deg' : '-360deg';
+    el.style.cssText =
+      'left:'+(Math.random()*100).toFixed(1)+'%;'+
+      'font-size:'+size+'rem;'+
+      '--pr:'+rot+';'+
+      'animation: petalFall '+dur+'s linear forwards;';
+    rain.appendChild(el);
+    setTimeout(function() { el.remove(); }, (parseFloat(dur)+0.5)*1000);
+  }
+
+  function startFlowers() {
+    for (var i = 0; i < 30; i++) setTimeout(spawnPetal, i * 70);
+    setInterval(spawnPetal, 320);
+  }
+
+  musicBtn.addEventListener('click', function() {
+    if (audio.paused) {
+      audio.play(); musicBtn.classList.add('playing');
+    } else {
+      audio.pause(); musicBtn.classList.remove('playing');
+    }
+  });
+
+  tick();
+  var timer = setInterval(tick, 1000);
+</script>
+</body>
+</html>
